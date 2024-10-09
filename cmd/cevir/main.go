@@ -2,14 +2,17 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"os"
+
+	"github.com/maliByatzes/cevir"
 )
 
 func main() {
+	// TODO: provide more robust flags
 	var fileName string
 	flag.StringVar(&fileName, "file", "", "File to convert")
+
 	flag.Parse()
 
 	if fileName == "" {
@@ -23,6 +26,9 @@ func main() {
 }
 
 func runApp(fileName string) error {
-	fmt.Println("fileName:", fileName)
+	// call convert epub to pdf for now
+	if err := cevir.ConvertEpubToPDF(fileName); err != nil {
+		return err
+	}
 	return nil
 }
