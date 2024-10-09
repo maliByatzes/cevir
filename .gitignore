@@ -1,0 +1,19 @@
+# Binaries for programs
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+*.out
+
+go.work
+go.work.sum
+
+*.env
+
+cmd/cevir/cevir
+files/
