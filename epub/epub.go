@@ -40,9 +40,19 @@ func (e *Epub) ExtractEpubFile(fileName string) error {
 	if err != nil {
 		return err
 	}
-	e.OpfFilepath = container.Rootfiles.Rootfile[0].FullPath
+	e.OpfFilepath = fmt.Sprintf("%s/%s", dir, container.Rootfiles.Rootfile[0].FullPath)
 
 	return nil
+}
+
+func (e *Epub) ValidatePackageDocument() error {
+  p, err := DecodePackageXML(e.OpfFilepath)
+  if err != nil {
+    return err
+  }
+  fmt.Println(p)
+
+  return nil
 }
 
 func confirmEpubFileExtension(fileName string) error {

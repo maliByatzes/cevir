@@ -1,6 +1,10 @@
 package cevir
 
-import "github.com/maliByatzes/cevir/epub"
+import (
+	"fmt"
+
+	"github.com/maliByatzes/cevir/epub"
+)
 
 func ConvertEpubToPDF(fileName string) error {
 	epub := epub.NewEpub()
@@ -8,6 +12,12 @@ func ConvertEpubToPDF(fileName string) error {
 	if err := epub.ExtractEpubFile(fileName); err != nil {
 		return err
 	}
+
+  fmt.Println(epub)
+
+  if err := epub.ValidatePackageDocument(); err != nil {
+    return err
+  }
 
 	return nil
 }

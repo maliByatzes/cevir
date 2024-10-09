@@ -30,12 +30,12 @@ func DecodeContainerXML(dir string) (*Container, error) {
 		return nil, fmt.Errorf("error readig file: %w\n", err)
 	}
 
-	var Container Container
+	var container Container
 
-	err = xml.Unmarshal(data, &Container)
+	err = xml.Unmarshal(data, &container)
 	if err != nil {
 		return nil, fmt.Errorf("error unmarshaling xml: %w", err)
 	}
 
-	return &Container, nil
+	return &container, nil
 }
