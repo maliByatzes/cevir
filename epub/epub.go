@@ -32,6 +32,16 @@ func (e *Epub) ExtractEpubFile(fileName string) error {
 	fmt.Println("extract dir:", dir)
 	e.ExtractDir = dir // NOTE: remember to clean this temp dir
 
+	if err := confirmEpubFileType(dir); err != nil {
+		return err
+	}
+
+	container, err := DecodeContainerXML(dir)
+	if err != nil {
+		return err
+	}
+	e.OpfFilepath = container.Rootfiles.Rootfile[0].FullPath
+
 	return nil
 }
 
@@ -61,4 +71,27 @@ func extractEpubZip(fileName string) (string, error) {
 	}
 
 	return dir, nil
+}
+
+func confirmEpubFileType(dir string) error {
+	mimetypeFilename := fmt.Sprintf("%s/mimetype", dir)
+
+	content, err := extractFileContents(mimetypeFilename)
+	if err != nil {
+		return err
+	}
+
+	if content != "application/epub+zip" {
+		return errors.New("invalid epub file type.")
+	}
+
+	return nil
+}
+
+func extractFileContents(fileName string) (string, error) {
+	content, err := os.ReadFile(fileName)
+	if err != nil {
+		return "", fmt.Errorf("read file failed: %s\n", err)
+	}
+	return string(content), nil
 }
