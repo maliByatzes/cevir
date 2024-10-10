@@ -42,13 +42,13 @@ type Spine struct {
 }
 
 type Metadata struct {
-	Identifier   DCElement `xml:"dc:identifier"`
-	Title        DCElement `xml:"dc:title"`
-	Language     DCElement `xml:"dc:language"`
-	Date         string    `xml:"dc:date"`
-	Creator      DCElement `xml:"dc:creator"`
-	Contributors []string  `xml:"dc:contributor"`
-	Publisher    string    `xml:"dc:publisher"`
+	Identifier   DCElement `xml:"identifier"`
+	Title        DCElement `xml:"title"`
+	Language     DCElement `xml:"language"`
+	Date         string    `xml:"date"`
+	Creator      DCElement `xml:"creator"`
+	Contributors []string  `xml:"contributor"`
+	Publisher    string    `xml:"publisher"`
 	Rights       string    `xml:"rights"`
 	Metas        []Meta    `xml:"meta"`
 	Links        []Link    `xml:"link,omitempty"`
@@ -57,9 +57,10 @@ type Metadata struct {
 type Package struct {
 	XMLName          xml.Name `xml:"package"`
 	Xmlns            string   `xml:"xmlns,attr"`
-	XmlnsDC          string   `xml:"xmlns:dcterms,attr"`
+	XmlnsDC          string   `xml:"dc,attr"`
+	XmlnsDcTerms     string   `xml:"dcterms,attr"`
 	Version          string   `xml:"version,attr"`
-	Lang             string   `xml:"xml:lang,attr"`
+	Lang             string   `xml:"lang,attr"`
 	UniqueIdentifier string   `xml:"unique-identifier,attr"`
 	Metadata         Metadata `xml:"metadata"`
 	Manifest         Manifest `xml:"manifest"`
@@ -67,17 +68,17 @@ type Package struct {
 }
 
 func DecodePackageXML(fileName string) (*Package, error) {
-  data, err := os.ReadFile(fileName)
-  if err != nil {
-    return nil, fmt.Errorf("error reading file: %w\n", err);
-  }
+	data, err := os.ReadFile(fileName)
+	if err != nil {
+		return nil, fmt.Errorf("error reading file: %w\n", err)
+	}
 
-  var p Package
+	var p Package
 
-  err = xml.Unmarshal(data, &p)
-  if err != nil {
-    return nil, fmt.Errorf("error unmarshalling xml: %w\n", err);
-  }
+	err = xml.Unmarshal(data, &p)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshalling xml: %w\n", err)
+	}
 
-  return &p, nil
+	return &p, nil
 }

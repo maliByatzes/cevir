@@ -50,7 +50,10 @@ func (e *Epub) ValidatePackageDocument() error {
   if err != nil {
     return err
   }
-  fmt.Println(p)
+
+  if err := validateMetadata(p); err != nil {
+    return err
+  }
 
   return nil
 }
@@ -104,4 +107,26 @@ func extractFileContents(fileName string) (string, error) {
 		return "", fmt.Errorf("read file failed: %s\n", err)
 	}
 	return string(content), nil
+}
+
+func validateMetadata(p *Package) error {
+  if p.Metadata.Identifier.Value == "" {
+    return errors.New("invalid metadata: identifier missing.")
+  }
+
+  if p.Metadata.Title.Value == "" {
+    return errors.New("invalid metdata: title missing.")
+  }
+
+  if p.Metadata.Language.Value == "" {
+    return errors.New("invalid metadata: langauge missing")
+  }
+
+  // Compulsory for EPUB 2
+  /*
+  if p.Metadata.Creator.Value == "" {
+    return errors.New("invalid metadata: creator missing")
+  }*/
+
+  return nil
 }
