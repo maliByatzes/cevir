@@ -8,10 +8,18 @@ import (
 	"strings"
 )
 
+type FileData struct {
+	ID   string
+	Href string
+	Data []byte
+}
+
 type Epub struct {
 	FilePath    string
 	ExtractDir  string
 	OpfFilepath string
+	PackageData *Package
+	Data        []FileData
 }
 
 func NewEpub() *Epub {
@@ -46,15 +54,24 @@ func (e *Epub) ExtractEpubFile(fileName string) error {
 }
 
 func (e *Epub) ValidatePackageDocument() error {
-  p, err := DecodePackageXML(e.OpfFilepath)
-  if err != nil {
-    return err
-  }
+	p, err := DecodePackageXML(e.OpfFilepath)
+	if err != nil {
+		return err
+	}
 
-  if err := validateMetadata(p); err != nil {
-    return err
-  }
+	if err := validateMetadata(p); err != nil {
+		return err
+	}
 
+  e.PackageData = p;
+
+	return nil
+}
+
+func (e *Epub) FillFileData() error {
+  for _, v := range e.PackageData.Spine.ItemRefs {
+    fmt.Printf("Idref: %s, linear: %s\n", v.IDRef, v.Linear);
+  }
   return nil
 }
 
@@ -110,23 +127,23 @@ func extractFileContents(fileName string) (string, error) {
 }
 
 func validateMetadata(p *Package) error {
-  if p.Metadata.Identifier.Value == "" {
-    return errors.New("invalid metadata: identifier missing.")
-  }
+	if p.Metadata.Identifier.Value == "" {
+		return errors.New("invalid metadata: identifier missing.")
+	}
 
-  if p.Metadata.Title.Value == "" {
-    return errors.New("invalid metdata: title missing.")
-  }
+	if p.Metadata.Title.Value == "" {
+		return errors.New("invalid metdata: title missing.")
+	}
 
-  if p.Metadata.Language.Value == "" {
-    return errors.New("invalid metadata: langauge missing")
-  }
+	if p.Metadata.Language.Value == "" {
+		return errors.New("invalid metadata: langauge missing")
+	}
 
-  // Compulsory for EPUB 2
-  /*
-  if p.Metadata.Creator.Value == "" {
-    return errors.New("invalid metadata: creator missing")
-  }*/
+	if p.Version == "2.0" {
+		if p.Metadata.Creator.Value == "" {
+			return errors.New("invalid metadata: creator missing")
+		}
+	}
 
-  return nil
+	return nil
 }

@@ -19,6 +19,10 @@ func ConvertEpubToPDF(fileName string) error {
     return err
   }
 
+  if err := epub.FillFileData(); err != nil {
+    return nil
+  }
+
 	return nil
 }
 
